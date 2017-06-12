@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Post
 
 
@@ -14,10 +14,15 @@ def post_list(request):
 
 def post_detail(request, post_pk):
     # post_pk에 해당하는 Post객체를 리턴, 보여줌
-    pass
+    context = {
+        'post': Post.objects.get(pk=post_pk),
+    }
+    return render(request, 'post/post_detail.html', context)
 
 
 def post_create(request):
+    if request.method == 'POST':
+        return redirect(post_list)
     # POST요청을 받아 Post객체를 생성 후 Post_list페이지로 redirect
     pass
 
@@ -33,6 +38,8 @@ def post_delete(request, post_pk):
 
 
 def comment_create(request, post_pk):
+    if request.method == 'POST':
+        return redirect(post_detail)
     # POST요청을 받아 Comment객체를 생성 후 post_detail페이지로 redirect
     pass
 
@@ -42,4 +49,7 @@ def comment_modify(request, post_pk):
 
 
 def comment_delete(request, post_pk):
-    pass
+    if request.method == 'POST':
+        post = Post.objects.get(pk=post_pk)
+        post.delete()
+        return redirect(post_list)
