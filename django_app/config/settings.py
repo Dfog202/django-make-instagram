@@ -8,6 +8,28 @@ https://docs.djangoproject.com/en/1.11/topics/settings/
 
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
+
+모듈 모음
+    회원 관리 모듈 (member/)
+        로그인
+        회원가입
+        팔로우
+        친구찾기
+        친구추천
+        개인페이지
+            내가 올린 글
+            내 정보 관리
+
+    글 관련 모듈 (post/)
+        뉴스피드
+        사진업로드
+        댓글달기
+        좋아요 누르기
+        태그달기
+
+    알림 관련 모듈 (noti/)
+        팔로워의 글 등록 알림
+        댓글 알림
 """
 
 import os
@@ -37,6 +59,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'post',
+
 ]
 
 MIDDLEWARE = [
