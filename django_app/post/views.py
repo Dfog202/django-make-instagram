@@ -15,8 +15,9 @@ def post_list(request):
 
 def post_detail(request, post_pk):
     # post_pk에 해당하는 Post객체를 리턴, 보여줌
+    post = Post.objects.get(pk=post_pk)
     context = {
-        'post': Post.objects.get(pk=post_pk),
+        'post': post,
     }
     return render(request, 'post/post_detail.html', context)
 
