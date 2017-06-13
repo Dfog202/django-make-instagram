@@ -1,10 +1,11 @@
 {% extends 'common/base.html' %}
 
 {% block content %}
+	<img src="{{ post.photo.url }}" alt="">
+	<div>작성자 : {{ post.author }}</div>
+	<div>좋아요 개수 : {{ post.like_count }}</div>
 
-<div>
-    <span>{{ post.author }}<br></span>
-    <span>{{ post.like_count }}</span>
+    <h5>댓글 목록</h5>
     {% if post.comment_set.all %}
     {% for comment in post.comment_set.all %}
     <div>
@@ -16,10 +17,6 @@
     {% else %}
     <div>댓글이 없습니다.</div>
     {% endif %}
-    <span>{{ post.modified_date }}<br></span>
-    <img src="{{ post.photo.url }}" alt="">
-
-</div>
 
 {% endblock %}
 

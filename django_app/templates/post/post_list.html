@@ -1,20 +1,12 @@
 {% extends 'common/base.html' %}
 
 {% block content %}
-<div align="right">
-    <a href="{% url 'post_create' %}"><button>새로운 글 작성</button></a>
-</div>
-{% for post in posts %}
-<div align="left">
-    <span>{{ post.author }}</span>
-</div>
-<div align="right">
-    <span>{{ post.modified_date }}<br><br></span>
-</div>
-<div align="center">
-    <a href="{% url 'post_detail' post_pk=post.pk %}"><img src="{{ post.photo.url }}" alt=""></a>
-<hr><br><br>
-</div>
+	{% for post in posts %}
+	<div>
+		<span>{{ post.id }}</span>
+		<span>{{ post.photo.url }}</span>
+		<img src="{{ post.photo.url }}" alt="">
+	</div>
 {% endfor %}
 
 {% endblock %}
