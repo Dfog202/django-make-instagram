@@ -2,9 +2,13 @@
 
 {% block content %}
 
-<form action="", method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    <button type="submit">업로드</button>
-</form>
+<div>
+    <form action="" method="POST" enctype="multipart/form-data">
+         {% csrf_token %}
+        <input type="file" name="file">
+        <input type="text" name="comment" placeholder="댓글">
+        <button type="submit">등록</button>
+    </form>
+</div>
 
 {% endblock %}
