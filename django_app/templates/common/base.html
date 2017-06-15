@@ -9,8 +9,9 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<link rel="stylesheet" href="{% static 'css/normalize.css' %}">
 	<link rel="stylesheet" href="{% static 'css/base.css' %}">
+	<link rel="stylesheet" href="{% static 'css/commom.css' %}">
 	<link rel="stylesheet" href="{% static 'css/layout.css' %}">
-  <link rel="stylesheet" href="{% static 'css/post.css' %}">
+    <link rel="stylesheet" href="{% static 'css/post.css' %}">
 	<title>Instagram</title>
 </head>
 <body>
@@ -37,13 +38,27 @@
 					</a>
 				</div>
 			</nav>
+			<nav>
+				<!--
+				로그인 되어있으면 <유저명>으로 로그인 중 표시
+				안되어 있으면 a태그로 로그인창으로 이동할 수 있는 링크 추가
+				-->
+				<div>
+					{% if user.is_authenticated %}
+					<span>{{ user }}로 로그인 중</span>
+					<a href="{% url 'member:logout' %}" class="btn">로그아웃</a>
+					{% else %}
+					<a href="{% url 'member:login' %}" class="btn">로그인</a>
+					{% endif %}
+				</div>
+			</nav>
 		</header>
 	<div class="test">
-		{% if user.is_authenticated %}
-		{{ user }} 가 로그인 중입니다
-		{% else %}
-		로그인 하세요
-		{% endif %}
+		<!--{% if user.is_authenticated %}-->
+		<!--{{ user }} 가 로그인 중입니다-->
+		<!--{% else %}-->
+		<!--로그인 하세요-->
+		<!--{% endif %}-->
 	</div>
 
 
