@@ -2,7 +2,7 @@ html, body {
   font-size: 14px;
   line-height: 18px;
 }
-input[type='text'] {
+input[type=text], input[type=password] {
   border: 1px solid #dbdbdb;
   border-radius: 3px;
   color: #262626;
@@ -10,4 +10,10 @@ input[type='text'] {
   outline: none;
   padding: 3px 10px 3px 10px;
   background-color: #fafafa;
+}
+.test {
+  padding: 10px;
+  color: white;
+  background-color: red;
+  font-size: 14px;
 }

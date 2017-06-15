@@ -1,6 +1,6 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login as django_login, logout as django_logout
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 
 def login(request):
@@ -13,13 +13,33 @@ def login(request):
     # /member/login/으로 접근시 이 view로 오도록 설정
     # config/urls.py에 member/urls.py를 include
     # member/urls.py에 app_name설정으로 namespace지정
-    # username = request.POST['username']
-    # password = request.POST['password']
-    # user = authenticate(request, username=username, password=password)
-
     if request.method == 'POST':
-        # login(request, user)
-        pass
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(
+            request,
+            username=username,
+            password=password,
+        )
+
+        # user변수가 None이 아닐경우 (정상적으로 인증되어 User객체를 얻은 경우
+        if user is not None:
+            # Django의 session을 이용해 이번 request와 user객체를 사용해 로그인 처리
+            # 이후의 request/response에서는 사용자가 인증된 상태로 통신이 이루어진다
+            django_login(request, user)
+            # 로그인 완료후에는 post_list뷰로 리다이렉트 처리
+            return redirect('post:post_list')
+        else:
+            return HttpResponse('Login invalid!')
     else:
+        # 만약 이미 로그인 된 상태일 경우
+        # post_list로 redirect
+        # 아닐경우 login.html을 render해서 리턴
+        if request.user.is_authenticated:
+            return redirect('post:post_list')
         return render(request, 'member/login.html')
-        # return HttpResponse('Login invalid!')
+
+
+def logout(request):
+    django_logout(request)
+    return redirect('post:post_list')

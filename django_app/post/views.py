@@ -91,5 +91,6 @@ def comment_modify(request, post_pk):
 def comment_delete(request, post_pk):
     pass
 
+
 def post_anyway(request):
     return redirect('post:post_list')

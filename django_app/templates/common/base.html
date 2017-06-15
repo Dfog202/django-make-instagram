@@ -38,10 +38,17 @@
 				</div>
 			</nav>
 		</header>
+	<div class="test">
+		{% if user.is_authenticated %}
+		{{ user }} 가 로그인 중입니다
+		{% else %}
+		로그인 하세요
+		{% endif %}
+	</div>
+
 
     <div class="container">
 		{% block content %}
-
     {% endblock %}
   </div>
   </div>
