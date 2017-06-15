@@ -6,6 +6,8 @@ from django.contrib.auth import \
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
+from .forms import LoginForm
+
 User = get_user_model()
 
 
@@ -20,21 +22,28 @@ def login(request):
     # config/urls.py에 member/urls.py를 include
     # member/urls.py에 app_name설정으로 namespace지정
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(
-            request,
-            username=username,
-            password=password,
-        )
-
+        # username = request.POST['username']
+        # password = request.POST['password']
+        # user = authenticate(
+        #     request,
+        #     username=username,
+        #     password=password,
+        # )
         # user변수가 None이 아닐경우 (정상적으로 인증되어 User객체를 얻은 경우
-        if user is not None:
-            # Django의 session을 이용해 이번 request와 user객체를 사용해 로그인 처리
-            # 이후의 request/response에서는 사용자가 인증된 상태로 통신이 이루어진다
+        # if user is not None:
+        #     # Django의 session을 이용해 이번 request와 user객체를 사용해 로그인 처리
+        #     # 이후의 request/response에서는 사용자가 인증된 상태로 통신이 이루어진다
+        #     django_login(request, user)
+        #     # 로그인 완료후에는 post_list뷰로 리다이렉트 처리
+        #     return redirect('post:post_list')
+
+        form = LoginForm(data=request.POST)
+        if form.is_valid():
+            user = form.cleaned_data['user']
             django_login(request, user)
-            # 로그인 완료후에는 post_list뷰로 리다이렉트 처리
             return redirect('post:post_list')
+
+        #
         else:
             return HttpResponse('Login invalid!')
     else:
@@ -43,7 +52,11 @@ def login(request):
         # 아닐경우 login.html을 render해서 리턴
         if request.user.is_authenticated:
             return redirect('post:post_list')
-        return render(request, 'member/login.html')
+        form = LoginForm()
+        context = {
+            'form': form,
+        }
+        return render(request, 'member/login.html', context)
 
 
 def logout(request):
