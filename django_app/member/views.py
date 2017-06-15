@@ -1,6 +1,12 @@
-from django.contrib.auth import authenticate, login as django_login, logout as django_logout
+from django.contrib.auth import \
+    authenticate, \
+    login as django_login, \
+    logout as django_logout, \
+    get_user_model
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+
+User = get_user_model()
 
 
 def login(request):
@@ -44,6 +50,7 @@ def logout(request):
     django_logout(request)
     return redirect('post:post_list')
 
+
 def signup(request):
     # member/signup.html을 이용
     # username, password1, password2를 받아 회원가입
@@ -55,14 +62,15 @@ def signup(request):
         username = request.POST['username']
         password1 = request.POST['password1']
         password2 = request.POST['password2']
-
-        user = authenticate(
-            request,
+        if User.objects.filter(username=username).exists():
+            return HttpResponse('Username is already exist')
+        elif password1 != password2:
+            return HttpResponse('Password and Password check are not equal')
+        user = User.objects.create_user(
             username=username,
-            password1=password1,
-            password2=password2,
+            password=password1
         )
-        if user is not None:
-            pass
+        django_login(request, user)
+        return redirect('post:post_list')
     else:
         return render(request, 'member/signup.html')
