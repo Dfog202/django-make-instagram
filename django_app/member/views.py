@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 
 
-def login1(request):
+def login(request):
     # member/login.html 생성
     # username, password, button이 있는 HTML 생성
     # POST 요청이 올 경우 좌측 코드를 기반으로 로그인 완료후 post_list로 이동
