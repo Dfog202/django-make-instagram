@@ -57,7 +57,7 @@ def post_create(request):
                 content=comment_string,
             )
 
-        return redirect('post:post_detail', post_pk=Post.pk)
+        return redirect('post:post_detail', post_pk=post.pk)
 
     else:
         return render(request, 'post/post_create.html')

@@ -24,7 +24,7 @@
     {% for comment in post.comment_set.all %}
     <div class="post-comment">
       <a href="" class="comment-author">{{ comment.author }}</a>
-      <span class="comment-content">{{ comment.context }}</span>
+      <span class="comment-content">{{ comment.context|slice:':4' }}</span>
       <a href="" class="comment-tag"></a>
     </div>
     {% endfor %}
