@@ -43,3 +43,26 @@ def login(request):
 def logout(request):
     django_logout(request)
     return redirect('post:post_list')
+
+def signup(request):
+    # member/signup.html을 이용
+    # username, password1, password2를 받아 회원가입
+    # 이미 유저가 존재하는지 검사
+    # password2가 일치하는지 검사
+    # 각각의 경우를 검사해서 틀릴경우 오류메세지 리턴
+    # 가입에 성공시 로그인시키고 post_list로 리다이렉트
+    if request.method == 'POST':
+        username = request.POST['username']
+        password1 = request.POST['password1']
+        password2 = request.POST['password2']
+
+        user = authenticate(
+            request,
+            username=username,
+            password1=password1,
+            password2=password2,
+        )
+        if user is not None:
+            pass
+    else:
+        return render(request, 'member/signup.html')
