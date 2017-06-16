@@ -6,16 +6,19 @@ User = get_user_model()
 
 class SignupForm(forms.Form):
     username = forms.CharField(
-        widget=forms.TextInput(
-        )
+        help_text='Signup help text test',
+        widget=forms.TextInput
+    )
+    nickname = forms.CharField(
+        help_text='닉네임은 유일해야 합니다',
+        widget=forms.TextInput,
+        max_length=24,
     )
     password1 = forms.CharField(
-        widget=forms.PasswordInput(
-        )
+        widget=forms.PasswordInput
     )
     password2 = forms.CharField(
-        widget=forms.PasswordInput(
-        )
+        widget=forms.PasswordInput
     )
 
     # clean_<fieldname>매서드를 사용해서
@@ -29,6 +32,14 @@ class SignupForm(forms.Form):
             )
         return username
 
+    def clean_nickname(self):
+        nickname = self.cleaned_data.get('nickname')
+        if nickname and User.object.filter(nickname=nickname).exists():
+            raise forms.ValidationError(
+                'Nickname already exist'
+            )
+        return nickname
+
     def clean_password2(self):
         password1 = self.cleaned_data.get('password1')
         password2 = self.cleaned_data.get('password2')
@@ -41,8 +52,11 @@ class SignupForm(forms.Form):
     def create_user(self):
         username = self.cleaned_data['username']
         password = self.cleaned_data['password2']
+        nickname = self.cleaned_data['nickname']
 
         return User.object.create_user(
             username=username,
+            nickname=nickname,
             password=password,
+
         )
