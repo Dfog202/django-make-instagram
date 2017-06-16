@@ -36,16 +36,18 @@ def login(request):
         #     django_login(request, user)
         #     # 로그인 완료후에는 post_list뷰로 리다이렉트 처리
         #     return redirect('post:post_list')
-        print(4132412341)
         form = LoginForm(data=request.POST)
         if form.is_valid():
             user = form.cleaned_data['user']
             django_login(request, user)
+            # next = request.GET.get('next')
+            # if next:
+            #     return redirect(next)
             return redirect('post:post_list')
 
         # 로그인 실패
         else:
-            return HttpResponse('Login invalid!')
+            # return HttpResponse('Login invalid!')
     # GET 요청시
     else:
         # 만약 이미 로그인 된 상태일 경우

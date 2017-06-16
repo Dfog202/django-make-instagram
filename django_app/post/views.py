@@ -1,8 +1,11 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.shortcuts import render, redirect
 from django.template import loader
+
+from post.forms.post import PostForm
 from .models import Post, Comment
 
 # 자동으로 Django에서 인증에 사용하는 User모델클래스를 리턴
@@ -35,32 +38,42 @@ def post_detail(request, post_pk):
 
     return HttpResponse(rendered_string)
 
-
+@login_required
 def post_create(request):
     # POST요청을 받아 Post객체를 생성 후 Post_list페이지로 redirect
     if request.method == 'POST':
-        # get_user_model을 이용해서 얻은 User클래스(Django에서 인증에 사용하는  유저모델)에서 임의의 유저 한명을 가져온다.
-        user = User.objects.first()
-        # 새 Post객체를 생성하고 DB에 저장
-        post = Post.objects.create(
-            author=user,
-            # file은 POST요청시 input[type='file']이 가진 name속성
-            photo=request.FILES['file'],
-        )
-        # POST요청시 name이 comment인 input에서 전달된 값을 가져옴
-        comment_string = request.POST.get('comment', '')
-        if not comment_string:
-            # 댓글로 사용할 문자열이 전달된 경우 위에서 생성한 post 객체에 연결되는 Comment객체를 생성해준다
-            post.comment_set.create(
-                # 임의의 user를 사용하므로 나중에 실제 로그인된 사용자로 바꿔야함
-                author=user,
-                content=comment_string,
-            )
-
-        return redirect('post:post_detail', post_pk=post.pk)
+        ######
+        # # get_user_model을 이용해서 얻은 User클래스(Django에서 인증에 사용하는  유저모델)에서 임의의 유저 한명을 가져온다.
+        # user = User.objects.first()
+        # # 새 Post객체를 생성하고 DB에 저장
+        # post = Post.objects.create(
+        #     author=user,
+        #     # file은 POST요청시 input[type='file']이 가진 name속성
+        #     photo=request.FILES['photo'],
+        # )
+        # # POST요청시 name이 comment인 input에서 전달된 값을 가져옴
+        # comment_string = request.POST.get('comment', '')
+        # if not comment_string:
+        #     # 댓글로 사용할 문자열이 전달된 경우 위에서 생성한 post 객체에 연결되는 Comment객체를 생성해준다
+        #     post.comment_set.create(
+        #         # 임의의 user를 사용하므로 나중에 실제 로그인된 사용자로 바꿔야함
+        #         author=user,
+        #         content=comment_string,
+        #     )
+        form = PostForm(data=request.POST, files=request.FILES)
+        if form.is_valid():
+            # ModelForm의 save()매서드를 사용해서 Post 객체를 가져옴
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
+            return redirect('post:post_detail', post_pk=post.pk)
 
     else:
-        return render(request, 'post/post_create.html')
+        form = PostForm()
+        context = {
+            'form': form,
+        }
+        return render(request, 'post/post_create.html', context)
 
 
 def post_modify(request, post_pk):
