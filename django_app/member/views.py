@@ -6,7 +6,7 @@ from django.contrib.auth import \
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
-from .forms import LoginForm
+from .forms import LoginForm, SignupForm
 
 User = get_user_model()
 
@@ -71,19 +71,44 @@ def signup(request):
     # password2가 일치하는지 검사
     # 각각의 경우를 검사해서 틀릴경우 오류메세지 리턴
     # 가입에 성공시 로그인시키고 post_list로 리다이렉트
+
+
     if request.method == 'POST':
-        username = request.POST['username']
-        password1 = request.POST['password1']
-        password2 = request.POST['password2']
-        if User.objects.filter(username=username).exists():
-            return HttpResponse('Username is already exist')
-        elif password1 != password2:
-            return HttpResponse('Password and Password check are not equal')
-        user = User.objects.create_user(
-            username=username,
-            password=password1
-        )
-        django_login(request, user)
-        return redirect('post:post_list')
+        ##### Form을 사용하지 않는 경우
+        #     username = request.POST['username']
+        #     password1 = request.POST['password1']
+        #     password2 = request.POST['password2']
+        #     if User.objects.filter(username=username).exists():
+        #         return HttpResponse('Username is already exist')
+        #     elif password1 != password2:
+        #         return HttpResponse('Password and Password check are not equal')
+        #     user = User.objects.create_user(
+        #         username=username,
+        #         password=password1
+        #     )
+
+        ##### Form을 사용한 경우
+        form = SignupForm(data=request.POST)
+        if form.is_valid():
+            username = request.POST['username']
+            password1 = request.POST['password1']
+            password2 = request.POST['password2']
+
+        # if User.objects.filter(username=username).exists():
+        #     return HttpResponse('Username is already exist')
+        # elif password1 != password2:
+        #     return HttpResponse('Password and Password check are not equal')
+        # user = User.objects.create_user(
+        #     username=username,
+        #     password=password1
+        # )
+
+        # django_login(request, user)
+            return redirect('post:post_list')
     else:
-        return render(request, 'member/signup.html')
+        form = SignupForm()
+
+    context = {
+        'form': form,
+    }
+    return render(request, 'member/signup.html', context)

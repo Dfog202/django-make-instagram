@@ -22,6 +22,7 @@ class LoginForm(forms.Form):
             }
         )
     )
+
     # is_valid를 실행했을 때, Form냅의 모든 field들에 대한
     # 우효성 검증을 실행하는 매서드
 
