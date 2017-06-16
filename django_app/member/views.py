@@ -36,7 +36,7 @@ def login(request):
         #     django_login(request, user)
         #     # 로그인 완료후에는 post_list뷰로 리다이렉트 처리
         #     return redirect('post:post_list')
-
+        print(4132412341)
         form = LoginForm(data=request.POST)
         if form.is_valid():
             user = form.cleaned_data['user']
