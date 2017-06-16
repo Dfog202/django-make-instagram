@@ -45,9 +45,6 @@ def login(request):
                 return redirect(next)
             return redirect('post:post_list')
 
-        # 로그인 실패
-        else:
-            # return HttpResponse('Login invalid!')
     # GET 요청시
     else:
         # 만약 이미 로그인 된 상태일 경우
