@@ -45,3 +45,4 @@ class LoginForm(forms.Form):
             raise forms.ValidationError(
                 'Login credentials not valid'
             )
+        return self.cleaned_data

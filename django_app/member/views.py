@@ -43,9 +43,10 @@ def login(request):
             django_login(request, user)
             return redirect('post:post_list')
 
-        #
+        # 로그인 실패
         else:
             return HttpResponse('Login invalid!')
+    # GET 요청시
     else:
         # 만약 이미 로그인 된 상태일 경우
         # post_list로 redirect
@@ -90,9 +91,6 @@ def signup(request):
         ##### Form을 사용한 경우
         form = SignupForm(data=request.POST)
         if form.is_valid():
-            username = request.POST['username']
-            password1 = request.POST['password1']
-            password2 = request.POST['password2']
 
         # if User.objects.filter(username=username).exists():
         #     return HttpResponse('Username is already exist')
@@ -102,8 +100,9 @@ def signup(request):
         #     username=username,
         #     password=password1
         # )
-
-        # django_login(request, user)
+            user = form.create_user()
+            # 생성한 유저를 로그인 시킴
+            django_login(request, user)
             return redirect('post:post_list')
     else:
         form = SignupForm()
