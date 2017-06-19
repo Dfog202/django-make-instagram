@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.template import loader
 
 from post.decorators import post_owner
@@ -98,15 +98,16 @@ def post_modify(request, post_pk):
     }
     return render(request, 'post/post_modify.html', context)
 
+@post_owner
+@login_required
 def post_delete(request, post_pk):
     # post_pk에 해당하는Post에 대한 delete요쳥만을 받음
     # 처리완료 후에는 post_list페이지로 redirect
     if request.method == 'POST':
-        post = Post.objects.get(pk=post_pk)
+        post = get_object_or_404(Post, pk=post_pk)
         post.delete()
         return redirect(post_list)
-    else:
-        return HttpResponse('method "GET"은 허용되지않습니다.')
+
 
 
 def comment_create(request, post_pk):
