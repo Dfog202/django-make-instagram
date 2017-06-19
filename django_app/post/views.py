@@ -5,7 +5,8 @@ from django.urls import reverse
 from django.shortcuts import render, redirect
 from django.template import loader
 
-from post.forms.post import PostForm
+from post.decorators import post_owner
+from .forms.post import PostForm
 from .models import Post, Comment
 
 # 자동으로 Django에서 인증에 사용하는 User모델클래스를 리턴
@@ -81,7 +82,8 @@ def post_create(request):
         }
         return render(request, 'post/post_create.html', context)
 
-
+@post_owner
+@login_required
 def post_modify(request, post_pk):
     post = Post.objects.get(pk=post_pk)
 
