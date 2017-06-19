@@ -1,6 +1,9 @@
 from django import forms
+from django.contrib.auth import get_user_model
+
 from ..models import Post, Comment
 
+User = get_user_model()
 
 class PostForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -27,7 +30,11 @@ class PostForm(forms.ModelForm):
         # 전달된 키워드 인수중
         author = kwargs.pop('author', None)
 
-        self.instance.author = author
+        # self.instance.pk가 존재하지 않거나(새로 생성하거나)
+        # author가 None이 아닐 경우
+        # 두 가지중 하나이면 self.instance.author에 전달된 author또는 None값을 할당
+        if not self.instance.pk or isinstance(author, User):
+            self.instance.author = author
         # ModelForm의 save()메서드를 사용해서 DB에 저장된 Post instance(pk를가짐) 가져옴
         instance = super().save(**kwargs)
 
