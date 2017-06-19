@@ -94,7 +94,7 @@ def post_modify(request, post_pk):
     context = {
         'form': form,
     }
-    return render(request, 'post/post_create.html', context)
+    return render(request, 'post/post_modify.html', context)
 
 def post_delete(request, post_pk):
     # post_pk에 해당하는Post에 대한 delete요쳥만을 받음

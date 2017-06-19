@@ -47,7 +47,7 @@ class PostForm(forms.ModelForm):
             else:
                 instance.my_comment = Comment.objects.create(
                     post=instance,
-                    author=author,
+                    author=instance.author,
                     content=comment_string,
                 )
             instance.save()
