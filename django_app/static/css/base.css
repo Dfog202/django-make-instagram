@@ -29,6 +29,12 @@ ul, ol {
   list-style-type: none;
 }
 
+.clearfix::after {
+  content: '';
+  display: block;
+  height: 0;
+}
+
 .test {
   padding: 10px;
   color: white;
