@@ -26,7 +26,7 @@ class Post(models.Model):
     )
     like_users = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
-        related_name='like_posts',
+        related_name='like_post',
         through='PostLike',
     )
 
@@ -72,7 +72,7 @@ class Comment(models.Model):
     like_users = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
         through='CommentLike',
-        related_name='CommentLike',
+        related_name='like_comments',
     )
 
     def save(self, *args, **kwargs):

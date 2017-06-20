@@ -26,7 +26,7 @@ class SignupForm(forms.Form):
 
     def clean_username(self):
         username = self.cleaned_data.get('username')
-        if User.objects.filter(username=username).exists():
+        if username and User.objects.filter(username=username).exists():
             raise forms.ValidationError(
                 'Username already exist'
             )
@@ -34,7 +34,7 @@ class SignupForm(forms.Form):
 
     def clean_nickname(self):
         nickname = self.cleaned_data.get('nickname')
-        if nickname and User.object.filter(nickname=nickname).exists():
+        if nickname and User.objects.filter(nickname=nickname).exists():
             raise forms.ValidationError(
                 'Nickname already exist'
             )
@@ -53,10 +53,8 @@ class SignupForm(forms.Form):
         username = self.cleaned_data['username']
         password = self.cleaned_data['password2']
         nickname = self.cleaned_data['nickname']
-
-        return User.object.create_user(
+        return User.objects.create_user(
             username=username,
             nickname=nickname,
-            password=password,
-
+            password=password
         )
