@@ -11,10 +11,13 @@ from post.models import Post
 
 User = get_user_model()
 
-__all__= (
-    'comment_create',
-    'comment_modify',
-    'comment_delete',
+
+__all__ = (
+    'post_list',
+    'post_detail',
+    'post_create',
+    'post_modify',
+    'post_delete',
 )
 
 def post_list(request):
@@ -36,7 +39,7 @@ def post_detail(request, post_pk):
     # post_pk에 해당하는 Post객체를 리턴, 보여줌
     try:
         post = Post.objects.get(pk=post_pk)
-    except Post.DoesNotExist as e:
+    except Post.DoesNotExist:
         url = reverse('post:post_list')
         return HttpResponseRedirect(url)
 
