@@ -7,7 +7,7 @@ from django.urls import reverse
 
 from post.decorators import post_owner
 from post.forms import CommentForm, PostForm
-from post.models import Post
+from post.models import Post, Tag
 
 User = get_user_model()
 
@@ -18,6 +18,7 @@ __all__ = (
     'post_create',
     'post_modify',
     'post_delete',
+    'hashtag_post_list',
 )
 
 def post_list(request):
@@ -143,4 +144,17 @@ def hashtag_post_list(request, tag_name):
     # 4. 해당 쿼리셋을 적절히 리턴
     # 5. Comment의 make_html_and_add_tags()메서드의
     #    a태그를 생성하는 부분에 이 view에 연결되는 URL을 삽입
-    pass
+    tag = get_object_or_404(Tag, name=tag_name)
+    # Post에 달린 댓글의 Tag까지 검색할때
+    # posts = Post.objects.filter(comment__tags=tag).distinct()
+
+    # Post의 my_comment에 있는 Tag만 검색할 때
+    posts = Post.objects.filter(my_comment__tags=tag)
+    posts_count = posts.count()
+
+    context = {
+        'tag': tag,
+        'posts': posts,
+        'posts_count': posts_count,
+    }
+    return render(request, 'post/hashtag_post_list.html', context)

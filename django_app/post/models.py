@@ -2,6 +2,7 @@ import re
 
 from django.db import models
 from django.conf import settings
+from django.urls import reverse
 
 '''
 member app 생성
@@ -72,10 +73,8 @@ class Comment(models.Model):
     )
 
     def save(self, *args, **kwargs):
-        if not self.pk:
-            super().save(*args, **kwargs)
-        self.make_html_content_and_add_tags()
         super().save(*args, **kwargs)
+        self.make_html_content_and_add_tags()
 
         # ex) 박보영 #존예 #여신 인스타
         # 박보영 <a href='#'>#여신</a> <a href='#'>#존예</a> 인스타
@@ -91,8 +90,9 @@ class Comment(models.Model):
         for tag_name in tag_name_list:
             # Tag객체를 가져오거나 생성, 생성여부는 쓰지않는 변수이므로 _ 처리
             tag, _ = Tag.objects.get_or_create(name=tag_name.replace('#', ''))
-            change_tag = '<a href="#" class="hash-tag">{}</a>'.format(
-                tag_name
+            change_tag = '<a href={url} class="hash-tag">{tag_name}</a>'.format(
+                url=reverse('post:hashtag_post_list', args=[tag_name.replace('#', '')]),
+                tag_name=tag_name
             )
 
             ori_content = re.sub(r'{}(?![<\w])'.format(tag_name), change_tag, ori_content, count=1)
@@ -101,6 +101,7 @@ class Comment(models.Model):
                 self.tags.add(tag)
         # 편집이 완료된 문자열을 html_content에 저장
         self.html_content = ori_content
+        super().save(update_fields=['html_content'])
 
 
 class CommentLike(models.Model):
