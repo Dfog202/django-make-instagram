@@ -72,6 +72,17 @@ form.form-inline-login {
     margin-right: 6px;
   }
 }
+.message {
+  position: fixed;
+  width: 80%;
+  left: 10%;
+  top: 5%;
+  padding: 20px;
+  border: 1px solid #333;
+  background-color: rgba(200, 255, 255, 0.5);
+  font-size: 15px;
+  text-align: center;
+}
 .container {
   max-width: 1080px;
   margin:  0 auto;;

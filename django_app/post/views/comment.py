@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect
 from django.views.decorators.http import require_POST
@@ -19,14 +20,20 @@ def comment_create(request, post_pk):
     post = get_object_or_404(Post, pk=post_pk)
     next = request.GET.get('next')
     form = CommentForm(request.POST)
+
+    # form 이 유효할 경우, Comment생성
     if form.is_valid():
         comment = form.save(commit=False)
         comment.author = request.user
         comment.post = post
         comment.save()
-        if next:
-            return redirect(next)
-        return redirect('post:post_detail', post_pk=post.pk)
+
+    else:
+        result = '<br>'.join(['<br>'.join(v) for v in form.errors.values()])
+        messages.error(request, result)
+    if next:
+        return redirect(next)
+    return redirect('post:post_detail', post_pk=post.pk)
 
 
 @login_required
