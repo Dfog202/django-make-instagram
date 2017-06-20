@@ -25,7 +25,7 @@
   <div class="post-bottom">
     <div class="post-btn-container">
       <div class="btn-left">
-        <a href="#">
+        <a href="{% url 'post:post_like' post_pk=post.pk %}">
           <img src="{% static 'images/post-heart.png' %}" alt="">
         </a>
         <a href="#">

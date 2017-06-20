@@ -20,6 +20,7 @@ __all__ = (
     'post_modify',
     'post_delete',
     'hashtag_post_list',
+    'post_like',
 )
 
 def post_list(request):
@@ -168,3 +169,14 @@ def hashtag_post_list(request, tag_name):
         'posts_count': posts_count,
     }
     return render(request, 'post/hashtag_post_list.html', context)
+
+
+@login_required
+def post_like(request, post_pk):
+    post = get_object_or_404(Post, pk=post_pk)
+    if post.postlike_set.filter(user=request.user).exists():
+        post.postlike_set.filter(user=request.user).delete()
+    else:
+        post.postlike_set.get_or_create(user=request.user)
+
+    return redirect('post:post_list')
