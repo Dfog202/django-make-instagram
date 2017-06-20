@@ -70,7 +70,3 @@ def comment_delete(request, comment_pk):
     post = comment.post
     comment.delete()
     return redirect('post:post_detail', post_pk=post.pk)
-
-
-def post_anyway(request):
-    return redirect('post:post_list')
