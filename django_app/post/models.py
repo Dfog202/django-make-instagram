@@ -30,6 +30,9 @@ class Post(models.Model):
         through='PostLike',
     )
 
+    class Meta:
+        ordering = ['-pk', ]
+
     def add_comment(self, user, content):
         # 자신을 post로 갖고, 전달받은user를 author로 가지며
         # content를 content 필드내용으로 넣는 Comment객체 생성

@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template import loader
@@ -28,11 +29,20 @@ def post_list(request):
     # 각 포스트에 대해 최대 4개까지 댓글을 보여주도록 템플릿에 설정
     # 각 post하나당 CommentForm을 하나씩 가지도록 리스트 컴프리핸션 사용
 
-    posts = Post.objects.order_by('-create_date')
+    post_all = Post.objects.all()
+    paginator = Paginator(post_all, 3)
+    page = request.GET.get('page')
+    try:
+        posts = paginator.page(page)
+    except PageNotAnInteger:
+        posts = paginator.page(1)
+    except EmptyPage:
+        posts = paginator.page(paginator.num_pages)
     context = {
         'posts': posts,
         'comment_form': CommentForm(),
     }
+
     return render(request, 'post/post_list.html', context)
 
 

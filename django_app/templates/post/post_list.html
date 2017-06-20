@@ -4,6 +4,23 @@
 <div>
 	<a href="{% url 'post:post_create' %}" class="btn">글 쓰기</a>
 </div>
+
+<div class="pagination" align="center">
+	<span class="step-links">
+		{% if posts.has_previous %}
+			<a href="?page={{ posts.previous_page_number }}" class="btn btn-xs">previous</a>
+		{% endif %}
+
+		<span class="current">
+			page {{ posts.number }} of {{ posts.paginator.num_pages }}.
+		</span>
+
+		{% if posts.has_next %}
+			<a href="?page={{ posts.next_page_number }}" class="btn btn-xs">next</a>
+		{% endif %}
+	</span>
+</div>
+<br>
 	{% for post in posts %}
 
 		{% include 'include/post.html' with type='list' %}
