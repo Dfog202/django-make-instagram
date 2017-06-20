@@ -1,10 +1,10 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
 from post.forms import CommentForm
-from post.models import Post
+from post.models import Post, Comment
 
 __all__ = (
     'comment_create',
@@ -37,9 +37,17 @@ def comment_create(request, post_pk):
 
 
 @login_required
-def comment_modify(request, post_pk):
+def comment_modify(request, comment_pk):
     # CommentForm을 만들어서 해당 ModelForm안에서 생성/수정 가능하도록
-    pass
+    comment = get_object_or_404(Comment, pk=comment_pk)
+    if request.method == 'POST':
+        pass
+    else:
+        form = CommentForm(instance=comment)
+    context = {
+        'form': form,
+    }
+    return render(request, 'post/comment_modify.html', context)
 
 
 @login_required
