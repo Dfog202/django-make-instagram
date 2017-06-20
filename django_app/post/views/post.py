@@ -1,24 +1,33 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseRedirect
-from django.urls import reverse
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template import loader
+from django.urls import reverse
 
 from post.decorators import post_owner
-from .forms.post import PostForm
-from .models import Post, Comment
+from post.forms import CommentForm, PostForm
+from post.models import Post
 
-# 자동으로 Django에서 인증에 사용하는 User모델클래스를 리턴
 User = get_user_model()
 
+__all__= (
+    'comment_create',
+    'comment_modify',
+    'comment_delete',
+)
 
 def post_list(request):
     # 모든 Post목록을 'post'라는 Key로 context에 담아 return render
     # post/post_list.html을 template로 사용하도록 한다
+
+    # 각 포스트에 대해 최대 4개까지 댓글을 보여주도록 템플릿에 설정
+    # 각 post하나당 CommentForm을 하나씩 가지도록 리스트 컴프리핸션 사용
+
     posts = Post.objects.order_by('-create_date')
     context = {
         'posts': posts,
+        'comment_form': CommentForm(),
     }
     return render(request, 'post/post_list.html', context)
 
@@ -38,6 +47,7 @@ def post_detail(request, post_pk):
     rendered_string = template.render(context=context, request=request)
 
     return HttpResponse(rendered_string)
+
 
 @login_required
 def post_create(request):
@@ -82,6 +92,7 @@ def post_create(request):
         }
         return render(request, 'post/post_create.html', context)
 
+
 @post_owner
 @login_required
 def post_modify(request, post_pk):
@@ -98,30 +109,17 @@ def post_modify(request, post_pk):
     }
     return render(request, 'post/post_modify.html', context)
 
+
 @post_owner
 @login_required
 def post_delete(request, post_pk):
     # post_pk에 해당하는Post에 대한 delete요쳥만을 받음
     # 처리완료 후에는 post_list페이지로 redirect
+    post = get_object_or_404(Post, pk=post_pk)
     if request.method == 'POST':
-        post = get_object_or_404(Post, pk=post_pk)
         post.delete()
-        return redirect(post_list)
-
-
-
-def comment_create(request, post_pk):
-    # POST요청을 받아 Comment객체를 생성 후 post_detail페이지로 redirect
-    pass
-
-
-def comment_modify(request, post_pk):
-    pass
-
-
-def comment_delete(request, post_pk):
-    pass
-
-
-def post_anyway(request):
-    return redirect('post:post_list')
+        return redirect('post:post_list')
+    else:
+        context = {
+            'post': post,
+        }

@@ -1,5 +1,5 @@
 from django.core.exceptions import PermissionDenied
-from post.models import Post
+from post.models import Post, Comment
 
 
 def post_owner(f):
@@ -8,5 +8,13 @@ def post_owner(f):
         if request.user == post.author:
             return f(request, *args, **kwargs)
         raise PermissionDenied
+    return wrap
 
+
+def comment_owner(f):
+    def wrap(request, *args, **kwargs):
+        comment = Comment.objects.get(pk=kwargs['post_pk'])
+        if request.user == comment.author:
+            return f(request, *args, **kwargs)
+        raise PermissionDenied
     return wrap
