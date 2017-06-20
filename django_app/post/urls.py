@@ -11,6 +11,7 @@ urlpatterns = [
 
     url(r'^(?P<post_pk>\d+)/comment/create/$', views.comment_create, name='comment_create'),
     url(r'^comment/(?P<comment_pk>\d+)/modify/$', views.comment_modify, name='comment_modify'),
+    url(r'^comment/(?P<comment_pk>\d+)/delete/$', views.comment_delete, name='comment_delete'),
 
 
     # 위쪽의 결과들과 매칭되지 않을 경우

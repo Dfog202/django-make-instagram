@@ -14,12 +14,12 @@ input[type=text], input[type=password] {
   background-color: #fafafa;
 }
 
-a {
+a, button {
   color: #262626;
   text-decoration: none;
 }
 
-a:hover {
+a:hover, button:hover {
   text-decoration: underline;
 }
 
