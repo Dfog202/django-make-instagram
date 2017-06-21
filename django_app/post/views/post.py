@@ -46,6 +46,15 @@ def post_list(request):
 
     return render(request, 'post/post_list.html', context)
 
+def post_list_original(request):
+    posts = Post.objects.all()
+    context = {
+        'posts': posts,
+        'comment_form': CommentForm(),
+    }
+    return render(request, 'post/post_list.html', context)
+
+
 
 def post_detail(request, post_pk):
     # post_pk에 해당하는 Post객체를 리턴, 보여줌

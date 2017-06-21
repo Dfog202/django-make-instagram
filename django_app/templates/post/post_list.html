@@ -5,19 +5,30 @@
 	<a href="{% url 'post:post_create' %}" class="btn">글 쓰기</a>
 </div>
 
+<div class="test">{{ request.GET }}</div>
+<div class="test">
+	{% for k, v_list in request.GET.items %}
+		{% for v in v_list %}
+			<span>{{ k }} : {{ v }}</span>
+		{% endfor %}
+	{% endfor %}
+</div>
+
 <div class="pagination" align="center">
 	<span class="step-links">
+		<a href="{{ request.path }}?page=1" class="btn btn-xs">처음으로</a>
 		{% if posts.has_previous %}
-			<a href="?page={{ posts.previous_page_number }}" class="btn btn-xs">previous</a>
+			<a href="{{ request.path }}?page={{ posts.previous_page_number }}" class="btn btn-xs" style="color: red"><b><</b></a>
 		{% endif %}
 
 		<span class="current">
-			page {{ posts.number }} of {{ posts.paginator.num_pages }}.
+			{{ posts.number }} of {{ posts.paginator.num_pages }}
 		</span>
 
 		{% if posts.has_next %}
-			<a href="?page={{ posts.next_page_number }}" class="btn btn-xs">next</a>
+			<a href="{{ request.path }}?page={{ posts.next_page_number }}" class="btn btn-xs"  style="color: red"><b> > </b></a>
 		{% endif %}
+			<a href="{{ request.path }}?page={{ posts.paginator.num_pages }}" class="btn btn-xs">끝으로</a>
 	</span>
 </div>
 <br>
