@@ -5,13 +5,13 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template import loader
 from django.urls import reverse
+from django.views.decorators.http import require_POST
 
 from post.decorators import post_owner
 from post.forms import CommentForm, PostForm
 from post.models import Post, Tag
 
 User = get_user_model()
-
 
 __all__ = (
     'post_list',
@@ -21,7 +21,9 @@ __all__ = (
     'post_delete',
     'hashtag_post_list',
     'post_like',
+    'post_like_toggle',
 )
+
 
 def post_list(request):
     # 모든 Post목록을 'post'라는 Key로 context에 담아 return render
@@ -46,6 +48,7 @@ def post_list(request):
 
     return render(request, 'post/post_list.html', context)
 
+
 def post_list_original(request):
     posts = Post.objects.all()
     context = {
@@ -53,7 +56,6 @@ def post_list_original(request):
         'comment_form': CommentForm(),
     }
     return render(request, 'post/post_list.html', context)
-
 
 
 def post_detail(request, post_pk):
@@ -149,6 +151,7 @@ def post_delete(request, post_pk):
         }
         return render(request, 'post/post_delete.html', context)
 
+
 def hashtag_post_list(request, tag_name):
     # 1. template생성
     #   post/hashtag_post_list.html
@@ -189,3 +192,22 @@ def post_like(request, post_pk):
         post.postlike_set.get_or_create(user=request.user)
 
     return redirect('post:post_list')
+
+
+@require_POST
+@login_required
+def post_like_toggle(request, post_pk):
+    # 1. post_pk에 해당하는 Post instance를 변수(post)에 할당
+    # 2. post에서 PostLike로의 RelatedManager를 사용해서
+    #     post속성이 post, user속성이 request.user인 PostLike가 있는지 get_or_create
+    # 3. 이후 created여부에 따라 해당 PostLike인스턴스를 삭제 또는 그냥 넘어가기
+    # 4. 리턴주소는 next가 주어질 경우 next, 아닐경우 post_detail로
+    post = get_object_or_404(Post, pk=post_pk)
+    post_like, post_like_created = post.postlike_set.get_or_create(
+        user=request.user,
+    )
+    if not post_like_created:
+       post_like.delete()
+    next = request.GET.get('next')
+    if next:
+        return redirect(next)
