@@ -207,7 +207,8 @@ def post_like_toggle(request, post_pk):
         user=request.user,
     )
     if not post_like_created:
-       post_like.delete()
-    next = request.GET.get('next')
-    if next:
-        return redirect(next)
+        post_like.delete()
+    # next = request.GET.get('next')
+    # if next:
+    #     return redirect(next)
+    return redirect('post:post_detail')
