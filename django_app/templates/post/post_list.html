@@ -1,18 +1,11 @@
 {% extends 'common/base.html' %}
+{% load custom_tags %}
 
 {% block content %}
 <div>
-	<a href="{% url 'post:post_create' %}" class="btn">글 쓰기</a>
+    <a href="{% url 'post:post_create' %}" class="btn">글 쓰기</a>
 </div>
 
-<div class="test">{{ request.GET }}</div>
-<div class="test">
-	{% for k, v_list in request.GET.items %}
-		{% for v in v_list %}
-			<span>{{ k }} : {{ v }}</span>
-		{% endfor %}
-	{% endfor %}
-</div>
 
 <div class="pagination" align="center">
 	<span class="step-links">
@@ -26,15 +19,37 @@
 		</span>
 
 		{% if posts.has_next %}
-			<a href="{{ request.path }}?page={{ posts.next_page_number }}" class="btn btn-xs"  style="color: red"><b> > </b></a>
+			<a href="{{ request.path }}?page={{ posts.next_page_number }}" class="btn btn-xs"
+               style="color: red"><b> > </b></a>
 		{% endif %}
 			<a href="{{ request.path }}?page={{ posts.paginator.num_pages }}" class="btn btn-xs">끝으로</a>
 	</span>
 </div>
 <br>
-	{% for post in posts %}
+{% for post in posts %}
 
-		{% include 'include/post.html' with type='list' %}
-	{% endfor %}
+{% include 'include/post.html' with type='list' %}
+{% endfor %}
 
+<div class="pagination" align="center">
+	<span class="step-links">
+		<a href="{{ request.path }}?page=1" class="btn btn-xs">처음으로</a>
+		{% if posts.has_previous %}
+			<a href="{{ request.path }}?page={{ posts.previous_page_number }}" class="btn btn-xs" style="color: red"><b><</b></a>
+		{% endif %}
+
+		<span class="current">
+			{{ posts.number }} of {{ posts.paginator.num_pages }}
+		</span>
+
+		{% if posts.has_next %}
+			<a href="{{ request.path }}?page={{ posts.next_page_number }}" class="btn btn-xs"
+               style="color: red"><b> > </b></a>
+		{% endif %}
+			<a href="{{ request.path }}?page={{ posts.paginator.num_pages }}" class="btn btn-xs">끝으로</a>
+	</span>
+</div>
+<br>
+<br>
+<br>
 {% endblock %}
