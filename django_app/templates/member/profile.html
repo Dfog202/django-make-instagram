@@ -1,0 +1,37 @@
+{% extends 'common/base.html' %}
+
+{% block content %}
+
+<div class="content">
+    <h3>{{ cur_user }}</h3>
+
+    {% if user != cur_user %}
+        {% if cur_user in user.following %}
+        <button type="submit" class="btn">팔로우 취소</button>
+        {% else %}
+        <button type="submit" class="btn">팔로우</button>
+        {% endif %}
+    {% endif %}
+
+
+
+    <h5>Following</h5>
+    {% for u in cur_user.following %}
+        <a href="{% url 'member:profile' user_pk=u.pk %}">{{ u }}</a>
+    {% endfor %}
+
+    <h5>Followers</h5>
+    {% for u in cur_user.followers %}
+        <a href="{% url 'member:profile' user_pk=u.pk %}">{{ u }}</a>
+    {% endfor %}
+
+</div>
+
+{% endblock %}
+
+
+    {% comment %}
+    {% for relation in cur_user.follow_relations.all %}
+        <div>{{ relation_to_user }}</div>
+    {% endfor %}
+    {% endcomment %}

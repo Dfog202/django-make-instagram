@@ -57,22 +57,24 @@ class User(AbstractUser):
         # )
 
     def unfollow(self, user):
-        # 반대 역할.
+        # 위의 반대 역할
         Relation.objects.filter(
             from_user=self,
-            to_user=user,
+            to_user=user
         ).delete()
 
     def is_follow(self, user):
-        # 해당 user를 내가 follow하고 있는지 bool여부 반환
+        # 해당 user를 내가 follow하고 있는지 bool여부를 반환
+        # ModelManager.exists()
         return self.follow_relations.filter(to_user=user).exists()
 
     def is_follower(self, user):
-        # 해당 user가 나를 follow하고 있는지 bool여부 반환
+        # 해당 user가 나를 follow하고 있는지 bool여부를 반환
         return self.follower_relations.filter(from_user=user).exists()
 
     def follow_toggle(self, user):
-        relation, relation_created = self.objects.get_or_create(to_user=user)
+        # 이미 follow상태면 unfollow로, 아닐경우 follow상태로 만듬
+        relation, relation_created = self.follow_relations.get_or_create(to_user=user)
         if not relation_created:
             relation.delete()
         else:
@@ -80,17 +82,14 @@ class User(AbstractUser):
 
     @property
     def following(self):
-        # '내가 follow중인 User QureySet'
+        # https://docs.djangoproject.com/en/1.11/ref/models/querysets/#in
         relations = self.follow_relations.all()
-        # relations = Relation.objects.filter(from_user=self)
-        return User.objects.filter(pk__in=relations.velues('pk'))
+        return User.objects.filter(pk__in=relations.values('to_user'))
 
     @property
     def followers(self):
-        # '나를 follow중인 User QureySet'
         relations = self.follower_relations.all()
-        return User.objects.filter(pk__in=relations.velues('pk'))
-
+        return User.objects.filter(pk__in=relations.values('from_user'))
 
 class Relation(models.Model):
     from_user = models.ForeignKey(User, related_name='follow_relations')
@@ -98,9 +97,9 @@ class Relation(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return 'Relation from ({}) to ({})'.format(
+        return 'Relation from({}) to ({})'.format(
             self.from_user,
-            self.to_user,
+            self.to_user
         )
 
     class Meta:

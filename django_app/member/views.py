@@ -4,7 +4,7 @@ from django.contrib.auth import \
     logout as django_logout, \
     get_user_model
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 
 from .forms import LoginForm, SignupForm
 
@@ -90,15 +90,14 @@ def signup(request):
         ##### Form을 사용한 경우
         form = SignupForm(data=request.POST)
         if form.is_valid():
-
-        # if User.objects.filter(username=username).exists():
-        #     return HttpResponse('Username is already exist')
-        # elif password1 != password2:
-        #     return HttpResponse('Password and Password check are not equal')
-        # user = User.objects.create_user(
-        #     username=username,
-        #     password=password1
-        # )
+            # if User.objects.filter(username=username).exists():
+            #     return HttpResponse('Username is already exist')
+            # elif password1 != password2:
+            #     return HttpResponse('Password and Password check are not equal')
+            # user = User.objects.create_user(
+            #     username=username,
+            #     password=password1
+            # )
             user = form.create_user()
             # 생성한 유저를 로그인 시킴
             django_login(request, user)
@@ -110,3 +109,46 @@ def signup(request):
         'form': form,
     }
     return render(request, 'member/signup.html', context)
+
+
+def profile(request, user_pk=None):
+    # 1. user_pk에 해당하는 User를 cur_user키로 render
+    if user_pk:
+        user = get_object_or_404(User, pk=user_pk)
+    else:
+        user = request.user
+    context = {
+        'cur_user': user,
+    }
+    return render(request, 'member/profile.html', context)
+
+    # 2. member/profile.html작성, 해당 user정보 보여주기
+    #     2-1, 해당 user의 followrs, following목록 보여주기
+    # 3. 현재 로그인한 유저가 해당 유저(cur_user)를 팔로우하고 있는지 여부 보여주기
+    #     3-1, 팔로우하고 있다면 '팔로우 해제'버튼, 아니라면 '팔로우'버튼 띄워주기
+    # 4. def follow_toggle(request)뷰 생성
+
+    """
+    1. GET parameter로 'page'를 받아 처리
+        page가 1일경우 Post의 author가 해당 User인
+        Post목록을 -created_date순서로 page * 9만큼의
+        QuerySet을 생성해서 리턴
+        만약 실제 Post개수보다 큰 page가 왔을 경우, 최대한의 값을 보여줌
+        int로 변환 불가능한 경우 except처리
+        1보다 작은값일 경우 except처리
+        'page'키의 값이 오지 않을 경우 page=1로 처리
+    2. def follow_toggle(request, user_pk)
+        위 함수기반 뷰를 구현
+            login_required
+            requirePOST
+        데코레이터들을 사용(필요하다면 더 추가)
+        처리 후 next값을 받아 처리하고,
+            없을 경우 해당 User의 profile페이지로 이동
+    **extra. 유저 차단기능 만들어보기
+        Block여부는 Relation에서 다룸
+            1. followers, following에 유저가 나타나면 안됨
+            2. block_users로 차단한 유저 목록 QuerySet리턴
+            3. follow, unfollow기능을 하기전에 block된 유저인지 확인
+            4. block처리시 follow상태는 해제되어야 함 (동시적용 불가)
+            4. 로그인 시 post_list에서 block_users의 글은 보이지 않도록 함
+    """
