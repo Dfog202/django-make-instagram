@@ -54,6 +54,10 @@ STATICFILES_DIRS = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+# Facebook
+FACEBOOK_APP_ID = '168578930349021'
+FACEBOOK_SECRET_CODE = '6608a1a35da0cad2d9a809d99efbcd5a'
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
@@ -112,7 +116,8 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
 
                 ## CUSTOM context processors
-                'member.context_processors.forms'
+                'member.context_processors.forms',
+                'utils.context_processors.facebook_info',
             ],
         },
     },
