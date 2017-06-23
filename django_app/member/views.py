@@ -115,7 +115,7 @@ def signup(request):
 
 
 def profile(request, user_pk=None):
-    num_posts_per_page = 6
+    num_posts_per_page = 3
 
     page = request.GET.get('page', 1)
     try:
