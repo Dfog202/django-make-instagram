@@ -16,7 +16,7 @@ class Post(models.Model):
     # Django가 제공하는 기본 User와 연결되도록 수정
     author = models.ForeignKey(settings.AUTH_USER_MODEL)
     photo = models.ImageField(upload_to='post', blank=True)
-    create_date = models.DateTimeField(auto_now_add=True)
+    created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
     my_comment = models.OneToOneField(
         'Comment',

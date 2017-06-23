@@ -72,7 +72,7 @@
         {% endif %}
       {% endfor %}
     </div>
-    <p class="created">{{ post.create_date }}</p>
+    <p class="created">{{ post.created_date }}</p>
     <form action="{% url 'post:comment_create' post_pk=post.pk %}?next={{ request.path }}{{ request.POST|query_string }}#post-{{ post.pk }}" method='POST'>
       {% csrf_token %}
       <!--<input type="text" placeholder="댓글달기" class="input-comment">-->
