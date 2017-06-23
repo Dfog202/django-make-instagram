@@ -1,3 +1,6 @@
+from pprint import pprint
+
+import requests
 from django.contrib.auth import \
     authenticate, \
     login as django_login, \
@@ -5,12 +8,14 @@ from django.contrib.auth import \
     get_user_model
 from django.shortcuts import redirect, render
 
+from config import settings
 from member.forms import LoginForm, SignupForm
 
 __all__ = (
     'login',
     'logout',
     'signup',
+    'facebook_login',
 )
 
 
@@ -112,3 +117,26 @@ def signup(request):
         'form': form,
     }
     return render(request, 'member/signup.html', context)
+
+
+def facebook_login(request):
+    # 이전에 요청했던 redirect_url
+    redirect_url = '{}://{}'.format(
+        request.scheme,
+        request.META['HTTP_HOST'],
+        request.path,
+    )
+    url_access_token = 'https://graph.facebook.com/v2.9/oauth/access_token'
+
+    code = request.GET.get('code')
+    if code:
+        # 액세스토큰의 코드 교환
+        url_access_token_params = {
+            'client_id': settings.FACEBOOK_APP_ID,
+            'redirect_url': 'redirect_url',
+            'client_secret': settings.FACEBOOK_SECRET_CODE,
+            'code': code,
+        }
+        response = requests.get(url_access_token, params=url_access_token_params)
+        result = response.json()
+        pprint(result)

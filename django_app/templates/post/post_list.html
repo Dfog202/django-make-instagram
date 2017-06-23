@@ -2,6 +2,7 @@
 {% load custom_tags %}
 
 {% block content %}
+<div class="test">{{ request.GET|query_string }}</div>
 <div>
     <a href="{% url 'post:post_create' %}" class="btn">글 쓰기</a>
 </div>
