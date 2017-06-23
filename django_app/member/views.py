@@ -6,6 +6,7 @@ from django.contrib.auth import \
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 
+from post.models import Post
 from .forms import LoginForm, SignupForm
 
 User = get_user_model()
@@ -112,14 +113,31 @@ def signup(request):
 
 
 def profile(request, user_pk=None):
+    NUM_POSTS_PER_PAGE = 3
+
+    page = request.GET.get('page', 1)
+    try:
+        page = int(page) if int(page) > 1 else 1
+    except ValueError:
+        page = 1
+    except Exception:
+        page = 1
+        # print(e)
+
     # 1. user_pk에 해당하는 User를 cur_user키로 render
     if user_pk:
         user = get_object_or_404(User, pk=user_pk)
     else:
         user = request.user
+
+    posts = Post.objects.filter(author=user).order_by('-create_date')[:page * NUM_POSTS_PER_PAGE]
+
     context = {
         'cur_user': user,
+        'posts': posts,
+        'page': page,
     }
+
     return render(request, 'member/profile.html', context)
 
     # 2. member/profile.html작성, 해당 user정보 보여주기
@@ -128,7 +146,8 @@ def profile(request, user_pk=None):
     #     3-1, 팔로우하고 있다면 '팔로우 해제'버튼, 아니라면 '팔로우'버튼 띄워주기
     # 4. def follow_toggle(request)뷰 생성
 
-    """
+
+"""
     1. GET parameter로 'page'를 받아 처리
         page가 1일경우 Post의 author가 해당 User인
         Post목록을 -created_date순서로 page * 9만큼의
@@ -151,4 +170,4 @@ def profile(request, user_pk=None):
             3. follow, unfollow기능을 하기전에 block된 유저인지 확인
             4. block처리시 follow상태는 해제되어야 함 (동시적용 불가)
             4. 로그인 시 post_list에서 block_users의 글은 보이지 않도록 함
-    """
+"""
