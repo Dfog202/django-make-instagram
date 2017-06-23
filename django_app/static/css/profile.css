@@ -8,7 +8,7 @@ ul.profile-photo-list li {
   display: inline-block;
   width: calc(100% / 3);
   box-sizing: border-box;
-  margin: 3%;
+  padding: 10px;
 }
 
 ul.profile-photo-list li img {

@@ -6,45 +6,52 @@
     <h3>{{ cur_user }}</h3>
 
     {% if user != cur_user %}
-        {% if cur_user in user.following %}
-        <button type="submit" class="btn">팔로우 취소</button>
-        {% else %}
-        <button type="submit" class="btn">팔로우</button>
-        {% endif %}
+        <form action="{% url 'member:follow_toggle' user_pk=user.pk %}" method="POST">
+        {% csrf_token %}
+            {% if cur_user in user.following %}
+            <button type="submit" class="btn">팔로우 취소</button>
+            {% else %}
+            <button type="submit" class="btn">팔로우</button>
+            {% endif %}
+        </form>
     {% endif %}
 
 
 
     <h5>Following</h5>
     {% for u in cur_user.following %}
+        <div>
         <a href="{% url 'member:profile' user_pk=u.pk %}">{{ u }}</a>
+        </div>
     {% endfor %}
 
     <h5>Followers</h5>
     {% for u in cur_user.followers %}
+        <div>
         <a href="{% url 'member:profile' user_pk=u.pk %}">{{ u }}</a>
+        </div>
     {% endfor %}
 
     <ul class="profile-photo-list">
         {% for post in posts %}
         <li>
-            <img src="{{ post.photo.url }}" alt="">
+            <a href="{% url 'post:post_detail' post_pk=post.pk %}">
+                <img src="{{ post.photo.url }}" alt="">
+            </a>
         </li>
         {% endfor %}
     </ul>
 
-    {% if request.GET.page %}
-    <a href="?page={{ request.GET.page|add:1 }}" class="btn btn-lg btn-primary btn-block">더 불러오기</a>
-    {% else %}
-    <a href="?page=2" class="btn btn-lg btn-primary btn-block">더 불러오기</a>
+    {% if next_page %}
+    <a href="?page={{ next_page }} }}" class="btn btn-lg btn-primary btn-block">더 불러오기</a>
     {% endif %}
 
 </div>
 {% endblock %}
 
 
-    {% comment %}
-    {% for relation in cur_user.follow_relations.all %}
-        <div>{{ relation_to_user }}</div>
-    {% endfor %}
-    {% endcomment %}
+{% comment %}
+{% for relation in cur_user.follow_relations.all %}
+    <div>{{ relation_to_user }}</div>
+{% endfor %}
+{% endcomment %}

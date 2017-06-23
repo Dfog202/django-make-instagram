@@ -8,8 +8,8 @@ header.top-header {
 }
 header.top-header > nav:nth-child(1) {
   max-width: 1010px;
-  padding: 0 10px;
   margin: 0 auto;
+  padding: 0 10px;
 
   height: $header-height;
   // 각 div내의 a요소들은 height와 line-height를
@@ -37,7 +37,7 @@ header.top-header > nav:nth-child(1) {
     width: 147px;
     float: left;
   }
-  @media screen and (max-width: 700px) {
+  @media screen and (max-width: $screen-tablet) {
     .nav-center {
       display: none;
     }
@@ -55,11 +55,12 @@ header.top-header > nav:nth-child(2) {
   padding: 8px 0;
   text-align: right;
 
-  >div {
+  > div {
     max-width: 1010px;
     margin: 0 auto;
   }
 }
+
 form.form-inline-login {
   font-size: 11px;
 
@@ -74,23 +75,24 @@ form.form-inline-login {
 }
 .message {
   position: fixed;
-  width: 80%;
-  left: 10%;
-  top: 5%;
-  padding: 20px;
+  width: 50%;
+  right: 3%;
+  top: 3%;
+  padding: 10px;
   border: 1px solid #333;
-  background-color: rgba(200, 255, 255, 0.5);
+  border-radius: 3px;
+  background-color: rgba(255, 255, 255, 0.5);
   font-size: 15px;
   text-align: center;
 }
 .container {
-  max-width: 1080px;
-  margin:  0 auto;;
-  margin-top: 40px;
+  max-width: 1010px;
+  margin: 0 auto;
+  padding-top: 40px;
   @media screen and (max-width: $screen-tablet) {
     padding-top: 0;
   }
 }
 .container > .content {
- padding: 10px;
+  padding: 10px;
 }
