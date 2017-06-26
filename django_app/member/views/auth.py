@@ -1,11 +1,9 @@
-from pprint import pprint
-
 import requests
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import \
     login as django_login, \
-    logout as django_logout
+    logout as django_logout, get_user_model
 from django.shortcuts import redirect, render
 
 from ..forms import LoginForm, SignupForm
@@ -16,6 +14,8 @@ __all__ = (
     'signup',
     'facebook_login',
 )
+
+User = get_user_model()
 
 
 def login(request):
@@ -197,9 +197,8 @@ def facebook_login(request):
         }
         response = requests.get(url_debug_token, url_debug_token_params)
         result = response.json()
-        print(result)
         if 'error' in result['data']:
-            raise Exception(result['data']['error'])
+            raise DebugTokenException(result)
         else:
             return result
 
@@ -212,13 +211,15 @@ def facebook_login(request):
                 'name',
                 'first_name',
                 'last_name',
-                'picture',
+                'picture.type(large)',
                 'gender',
             ])
         }
         response = requests.get(url_user_info, params=url_user_info_params)
         result = response.json()
         return result
+
+
 
     # facebook_login view가 처음 호출될 때
     #   유저가 Facebook login dialog에서 로그인 후, 페이스북에서 우리서비스 (Consumer)쪽으로
@@ -240,7 +241,11 @@ def facebook_login(request):
 
         # debug_result에 있는 user_id값을 이용해서 GraphAPI에 유저정보를 요청
         user_info = get_user_info(user_id=debug_result['data']['user_id'], token=access_token)
-        print(user_info)
+        user = User.objects.get_or_create_facebook_user(user_info)
+
+        django_login(request, user)
+        return redirect(request.META['HTTP_REFERER'])
+
     except GetAccessTokenException as e:
         print(e.code)
         print(e.message)
