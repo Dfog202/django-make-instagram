@@ -249,6 +249,7 @@ def facebook_login(request):
     except GetAccessTokenException as e:
         print(e.code)
         print(e.message)
+        return add_message_and_redirect_referer()
     except DebugTokenException as e:
         print(e.code)
         print(e.message)
