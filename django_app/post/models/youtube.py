@@ -2,17 +2,18 @@ from django.db import models
 
 __all__ = (
     'Video',
+    'VideoManager',
 )
 
 
-class VideoManager(models.Model):
+class VideoManager(models.Manager):
     def create_from_search_result(self, result):
-        youtube_id = result['id']['vidioId']
+        youtube_id = result['id']['videoId']
         title = result['snippet']['title']
         description = result['snippet']['description']
         url_thumbnail = result['snippet']['thumbnails']['high']['url']
         # get_or_create를 이용해 youtube_id에 해당하는 데이터가 있으면 넘어가고, 없으면 생성
-        video, video_created = Video.objects.get_or_create(
+        video, video_created = self.get_or_create(
             youtube_id=youtube_id,
             defaults={
                 'title': title,
@@ -27,10 +28,12 @@ class VideoManager(models.Model):
         return video
 
 class Video(models.Model):
-    youtube_id = models.CharField(max_length=50)
+    youtube_id = models.CharField(max_length=50, unique=True)
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     url_thumbnail = models.CharField(max_length=200)
+
+    objects = VideoManager()
 
     def __str__(self):
         return self.title
