@@ -131,12 +131,15 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'lee',
+        'NAME': 'instagram',
+        'USER': 'lee',
         'PASSWORD': 'asd123',
         'HOST': 'localhost',
         'PORT': '5432',
+        'test': '',
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators

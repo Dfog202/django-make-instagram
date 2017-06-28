@@ -1,9 +1,6 @@
 import requests
-from oauth2client.tools import argparser
-
-DEVELOPER_KEY = 'REPLACE_ME'
-YOUTUBE_API_SERVICE_NAME = 'youtube'
-YOUTUBE_API_VERSION = 'v3'
+from django.contrib.admin import options
+from googleapiclient.discovery import build
 
 
 def search_original(q):
@@ -19,8 +16,13 @@ def search_original(q):
     data = response.json()
     return data
 
+
 def search(q):
     # google api client를 사용
+    DEVELOPER_KEY = 'AIzaSyCfNVvone9F96-ExRmi9zR05lQKvt8Tals'
+    YOUTUBE_API_SERVICE_NAME = 'youtube'
+    YOUTUBE_API_VERSION = 'v3'
+
     youtube = build(
         YOUTUBE_API_SERVICE_NAME,
         YOUTUBE_API_VERSION,
@@ -28,7 +30,9 @@ def search(q):
     )
 
     search_response = youtube.search().list(
-        q=q.q,
-        part='id.snippet',
-        maxResults='q.max_results'
+        q=q,
+        part="id,snippet",
+        maxResults=10,
+        type='video',
     ).execute()
+    return search_response
