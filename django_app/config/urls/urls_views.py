@@ -19,8 +19,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.views.generic import RedirectView
 
-from config import views
-from post import views as post_views
+from .. import views
 
 
 
@@ -35,7 +34,7 @@ urlpatterns = [
     # url(r'^$', post_views.index),
 
     # post앱의 urls.py모듈을 include시킨다
-    url(r'^post/', include('post.urls')),
+    url(r'^post/', include('post.urls.urls_views')),
 
     url(r'^member/', include('member.urls')),
 ]
