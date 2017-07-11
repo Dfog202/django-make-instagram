@@ -1,1 +1,1 @@
-from .post import PostListView
+from .post import PostListCreateView
