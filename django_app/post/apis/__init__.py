@@ -1,1 +1,1 @@
-from .post import PostListCreateView
+from .post import *

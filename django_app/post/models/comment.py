@@ -19,7 +19,7 @@ class Comment(models.Model):
     content = models.TextField()
     html_content = models.TextField(blank=True)
     tags = models.ManyToManyField('Tag')
-    create_date = models.DateTimeField(auto_now_add=True)
+    created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
     like_users = models.ManyToManyField(
         settings.AUTH_USER_MODEL,

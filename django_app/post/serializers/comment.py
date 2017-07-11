@@ -1,4 +1,5 @@
 from rest_framework import serializers
+
 from ..models import Comment
 
 __all__ = (
@@ -9,7 +10,7 @@ __all__ = (
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        field = (
+        fields = (
             'pk',
             'author',
             'post',
