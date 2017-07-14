@@ -81,7 +81,7 @@ class User(AbstractUser):
         (USER_TYPE_DJANGO, 'Django'),
         (USER_TYPE_FACEBOOK, 'Facebook'),
     )
-
+    email = models.EmailField(null=True, unique=True)
     user_type = models.CharField(max_length=1, choices=USER_TYPE_CHOICES, default=USER_TYPE_DJANGO)
     nickname = models.CharField(max_length=24, null=True, unique=True)
     img_profile = CustomImageField(upload_to='user', blank=True)
@@ -156,6 +156,10 @@ class User(AbstractUser):
     def followers(self):
         relations = self.follower_relations.all()
         return User.objects.filter(pk__in=relations.values('from_user'))
+
+# User._meta.get_field('email')._unique = True
+# User._meta.get_field('email')._null = True
+# User._meta.get_field('email')._blank = True
 
 class Relation(models.Model):
     from_user = models.ForeignKey(User, related_name='follow_relations')
