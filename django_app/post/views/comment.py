@@ -6,6 +6,8 @@ from django.views.decorators.http import require_POST
 from post.decorators import comment_owner
 from post.forms import CommentForm
 from post.models import Post, Comment
+from django.core.mail import send_mail, EmailMessage
+from django.utils.datetime_safe import strftime
 
 __all__ = (
     'comment_create',
@@ -28,6 +30,25 @@ def comment_create(request, post_pk):
         comment.author = request.user
         comment.post = post
         comment.save()
+
+        mail_subject = '{}에 작성한 글에 {}님이 댓글을 작성했습니다'.format(
+            post.created_date.strftime('%Y.%m.%d %H:%M'),
+            request.user
+        )
+        mail_content = '{}님의 댓글\n{}'.format(
+            request.user,
+            comment.content
+        )
+        send_mail(
+            mail_subject,
+            mail_content,
+            'poopa8788@gmail.com',
+            [post.author.email],
+        )
+
+        # message = EmailMessage(mail_subject, mail_content, to=[post.author.email])
+        # message.send()
+
 
     else:
         result = '<br>'.join(['<br>'.join(v) for v in form.errors.values()])
